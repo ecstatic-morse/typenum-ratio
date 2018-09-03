@@ -1,0 +1,13 @@
+[package]
+name = "typenum-ratio"
+version = "0.0.1"
+authors = ["Dylan MacKenzie <ecstaticmorse@gmail.com>"]
+license = "MIT"
+description = "Compile-time rational arithmetic using typenum"
+readme = "README.md"
+
+[dependencies]
+
+[dependencies.typenum]
+git = "https://github.com/ecstatic-morse/typenum"
+rev = "1a12fee71f69fb63838c1a2dd535461d397303cb"
