@@ -94,25 +94,19 @@ use super::{Rational, Num, Den, ReducedRatio};
 /// [reduced]: http://mathworld.wolfram.com/ReducedFraction.html
 pub struct Ratio<N, D = P1>(PhantomData<(N, D)>);
 
-impl<N, D> Ratio<N, D> {
-    fn _new() -> Self {
-        Ratio(PhantomData)
-    }
-}
-
 impl<N, D> Ratio<N, D>
     where N: Integer,
           D: Integer + NonZero,
 {
     /// Constructs a new `Ratio` with the given numerator and denominator.
     pub fn new(_num: N, _den: D) -> Self {
-        Self::_new()
+        Default::default()
     }
 }
 
 impl<N, D> Default for Ratio<N, D> {
     fn default() -> Self {
-        Self::_new()
+        Ratio(PhantomData)
     }
 }
 
@@ -227,7 +221,7 @@ impl<N1, D1, N2, D2> Add<Ratio<N2, D2>> for Ratio<N1, D1>
         >;
 
     fn add(self, _: Ratio<N2, D2>) -> Self::Output {
-        Self::Output::_new()
+        Default::default()
     }
 }
 
@@ -242,7 +236,7 @@ impl<N, D, I> Add<I> for Ratio<N, D>
     type Output = Ratio<Sum<N, Prod<D, I>>, D>;
 
     fn add(self, _: I) -> Self::Output {
-        Self::Output::_new()
+        Default::default()
     }
 }
 
@@ -262,7 +256,7 @@ impl<N1, D1, N2, D2> Sub<Ratio<N2, D2>> for Ratio<N1, D1>
         >;
 
     fn sub(self, _: Ratio<N2, D2>) -> Self::Output {
-        Self::Output::_new()
+        Default::default()
     }
 }
 
@@ -277,7 +271,7 @@ impl<N, D, I> Sub<I> for Ratio<N, D>
     type Output = Ratio<Diff<N, Prod<D, I>>, D>;
 
     fn sub(self, _: I) -> Self::Output {
-        Self::Output::_new()
+        Default::default()
     }
 }
 
@@ -290,7 +284,7 @@ impl<N1, D1, N2, D2> Mul<Ratio<N2, D2>> for Ratio<N1, D1>
     type Output = ReducedRatio<Prod<N1, N2>, Prod<D1, D2>>;
 
     fn mul(self, _: Ratio<N2, D2>) -> Self::Output {
-        Self::Output::_new()
+        Default::default()
     }
 }
 
@@ -303,7 +297,7 @@ impl<N, D, I> Mul<I> for Ratio<N, D>
     type Output = ReducedRatio<Prod<N, I>, D>;
 
     fn mul(self, _: I) -> Self::Output {
-        Self::Output::_new()
+        Default::default()
     }
 }
 
@@ -316,7 +310,7 @@ impl<N1, D1, N2, D2> Div<Ratio<N2, D2>> for Ratio<N1, D1>
     type Output = ReducedRatio<Prod<N1, D2>, Prod<D1, N2>>;
 
     fn div(self, _: Ratio<N2, D2>) -> Self::Output {
-        Self::Output::_new()
+        Default::default()
     }
 }
 
@@ -330,14 +324,33 @@ impl<N, D, I> Div<I> for Ratio<N, D>
     type Output = Ratio<N, Prod<D, I>>;
 
     fn div(self, _: I) -> Self::Output {
-        Self::Output::_new()
+        Default::default()
     }
 }
 
+/// (N1/D1) % (N2/D2) = (N1*D2 % N2*D1)/(D1*D2)
+impl<N1, D1, N2, D2> Rem<Ratio<N2, D2>> for Ratio<N1, D1>
+    where N1: Mul<D2>,
+          N2: Mul<D1>,
+          D1: Mul<D2>,
+          Prod<N1, D2>: Rem<Prod<N2, D1>>,
+          Ratio<Mod<Prod<N1, D2>, Prod<N2, D1>>, Prod<D1, D2>>: Rational,
+
+{
+    type Output =
+        ReducedRatio<
+            Mod<Prod<N1, D2>, Prod<N2, D1>>,
+            Prod<D1, D2>,
+        >;
+
+    fn rem(self, _: Ratio<N2, D2>) -> Self::Output {
+        Default::default()
+    }
+}
+
+/// gcd(N1/D1, N2/D2) = gcd(N1*D2, N2*D1)/(D1*D2)
 impl<N1, D1, N2, D2> Gcd<Ratio<N2, D2>> for Ratio<N1, D1>
-    where Ratio<N1, D1>: Rational,
-          Ratio<N2, D2>: Rational,
-          N1: Mul<D2>,
+    where N1: Mul<D2>,
           N2: Mul<D1>,
           D1: Mul<D2>,
           Prod<N1, D2>: Gcd<Prod<N2, D1>>,

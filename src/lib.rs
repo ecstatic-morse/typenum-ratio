@@ -57,7 +57,7 @@ macro_rules! rat {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use typenum::consts::*;
+    use typenum::{consts::*, operator_aliases::*};
 
     #[test]
     fn reduce() {
@@ -66,6 +66,12 @@ mod tests {
 
         assert_eq!(rat!(N1/N1), rat!(P1/P1));
         assert_eq!(rat!(N1/P1), rat!(P1/N1));
+    }
+
+    #[test]
+    fn cmp() {
+        assert!(rat!(P2/P3) > rat!(P3/P5));
+        assert!(rat!(N1/N2) > rat!(P1/N2));
     }
 
     #[test]
@@ -100,8 +106,15 @@ mod tests {
     }
 
     #[test]
-    fn cmp() {
-        assert!(rat!(P2/P3) > rat!(P3/P5));
-        assert!(rat!(N1/N2) > rat!(P1/N2));
+    fn rem() {
+        assert_eq!(rat!(P9/P8) % rat!(P3/P16), rat!(Z0/P1));
+        assert_eq!(rat!(P3/P8) % rat!(P1/P4),  rat!(P1/P8));
+    }
+
+    #[test]
+    fn gcd() {
+        assert_eq!(Gcf::<Ratio<P9, P8>, Ratio<P3, P16>>::default(), rat!(P3/P16));
+        assert_eq!(Gcf::<Ratio<P3, P7>, Ratio<P12, P22>>::default(), rat!(P3/P77));
+        assert_eq!(Gcf::<Ratio<P13, P6>, Ratio<P3, P4>>::default(), rat!(P1/P12));
     }
 }
