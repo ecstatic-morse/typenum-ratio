@@ -1,5 +1,6 @@
 extern crate typenum;
 
+pub mod consts;
 mod operator_aliases;
 mod ratio;
 
