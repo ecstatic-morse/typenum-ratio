@@ -11,12 +11,21 @@ use typenum::{Integer, NonZero};
 
 /// A type representing a rational number whose value is known at compile time.
 ///
-/// `Self::Num / Self::Den` must be a [reduced fraction][reduced] and `Self::Den` must always be a
-/// positive integer.
+/// All implementors of `Rational` must ensure the following:
+///
+/// * `Self::Den` is a positive integer.
+///
+/// * `Self::Num / Self::Den` is a [reduced fraction][reduced]. Equivalently, the greatest common
+///   divisor of `Self::Num` and `Self::Den` is `1`.
 ///
 /// [reduced]: http://mathworld.wolfram.com/ReducedFraction.html
 pub trait Rational {
+    /// The numerator of the rational number.
     type Num: Integer;
+
+    /// The denominator of the rational number.
+    ///
+    /// Must be positive.
     type Den: Integer + NonZero;
 }
 
@@ -25,7 +34,7 @@ pub(crate) type Den<N, D> = <Ratio<N, D> as Rational>::Den;
 
 /// Creates a [`Ratio`] from two type-level integers.
 ///
-/// [`Ratio`]: ./struct.Ratio.htmrational numberl
+/// [`Ratio`]: ./struct.Ratio.html
 ///
 /// # Example
 ///
@@ -56,6 +65,7 @@ mod tests {
         assert_eq!(rat!(P1/P1), rat!(P2/P2));
 
         assert_eq!(rat!(N1/N1), rat!(P1/P1));
+        assert_eq!(rat!(N1/P1), rat!(P1/N1));
     }
 
     #[test]

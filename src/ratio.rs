@@ -18,10 +18,16 @@ use super::{Rational, Num, Den, ReducedRatio};
 
 /// A rational number whose value is known at compile time.
 ///
-/// This type implements [`Rational`] with the [reduced] version of `N/D` as long as `N` and `D`
-/// are [`typenum::Integer`]s and `D` is not [`Z0`].
+/// This type implements [`Rational`] if *all* of the following conditions are met:
 ///
-/// For a more convenient way to construct a `Ratio`, use the [`rat!`] macro.
+/// * `N` and `D` are [`typenum::Integer`]s.
+/// * `D` is [`NonZero`].
+///
+/// `numerator   = sign(D) * N / gcd(N, D)`
+/// `denominator = abs(D) / gcd(N, D)`
+///
+/// Most uses of `Ratio` will be as a type parameter. For the rare cases when an instance of a
+/// `Ratio` type is needed, use the [`rat!`] macro.
 ///
 /// # Example
 ///
@@ -37,11 +43,11 @@ use super::{Rational, Num, Den, ReducedRatio};
 /// ```
 ///
 /// [`Rational`]: ./trait.Rational.html
-/// [`Z0`]: https://docs.rs/typenum/1.10.0/typenum/int/struct.Z0.html
+/// [`NonZero`]: https://docs.rs/typenum/1.10.0/typenum/marker_traits/trait.NonZero.html
 /// [`rat!`]: ./macro.rat.html
 /// [`typenum::Integer`]: https://docs.rs/typenum/1.10.0/typenum/marker_traits/trait.Integer.html
 /// [reduced]: http://mathworld.wolfram.com/ReducedFraction.html
-pub struct Ratio<N, D>(PhantomData<(N, D)>);
+pub struct Ratio<N, D = P1>(PhantomData<(N, D)>);
 
 impl<N, D> Ratio<N, D> {
     fn _new() -> Self {
