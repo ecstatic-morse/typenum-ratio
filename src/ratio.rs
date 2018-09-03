@@ -35,11 +35,56 @@ use super::{Rational, Num, Den, ReducedRatio};
 /// extern crate typenum;
 /// extern crate typenum_ratio;
 ///
-/// use typenum::consts::*;
-/// use typenum_ratio::Ratio;
+/// use std::ops;
+/// use std::marker::PhantomData;
 ///
-/// assert_eq!(Ratio::<N1, P3>::default() + Ratio::<P4, N6>::default(),
-///            Ratio::<N1, P1>::default());
+/// use typenum::{Integer, consts::*, type_operators::*, operator_aliases::*};
+/// use typenum_ratio::{Ratio, Rational};
+///
+/// /// An amount of English currency prior to decimalization.
+/// #[derive(Debug)]
+/// struct Sterling<R>(i32, PhantomData<R>);
+///
+/// impl<R> Sterling<R> {
+///     fn new(amount: i32) -> Self {
+///         Sterling(amount, PhantomData)
+///     }
+/// }
+///
+/// type Pounds = Ratio<P1>;
+/// type Shillings = Quot<Pounds, P20>;  // 1 pound = 20 shillings
+/// type Guineas = Prod<Shillings, P21>; // 1 guinea = 21 shillings (1717-1816)
+/// type Pence = Quot<Shillings, P12>;   // 1 shilling = 12 pence
+/// type Farthings = Quot<Pence, P4>;    // 1 penny = 4 farthings
+///
+/// impl<S, R> PartialEq<Sterling<R>> for Sterling<S>
+///     where S: Rational,
+///           R: Rational,
+/// {
+///     fn eq(&self, rhs: &Sterling<R>) -> bool {
+///         self.0 * S::Num::to_i32() * R::Den::to_i32()
+///             == rhs.0 * R::Num::to_i32() * S::Den::to_i32()
+///     }
+/// }
+///
+/// impl<S, R> ops::Add<Sterling<R>> for Sterling<S>
+///     where S: Rational + Gcd<R> + ops::Div<Gcf<S, R>>,
+///           R: Rational + ops::Div<Gcf<S, R>>,
+///           Quot<S, Gcf<S, R>>: Rational,
+///           Quot<R, Gcf<S, R>>: Rational,
+/// {
+///     type Output = Sterling<Gcf<S, R>>;
+///
+///     fn add(self, rhs: Sterling<R>) -> Self::Output {
+///         Sterling::new(self.0 * <Quot::<S, Gcf<S, R>> as Rational>::Num::to_i32()
+///                         + rhs.0 * <Quot::<R, Gcf<S, R>> as Rational>::Num::to_i32())
+///     }
+/// }
+///
+/// assert_eq!(Sterling::<Pounds>::new(1) + Sterling::<Shillings>::new(20),
+///            Sterling::<Pence>::new(480));
+///
+/// assert_eq!(Sterling::<Pounds>::new(21), Sterling::<Guineas>::new(20))
 /// ```
 ///
 /// [`Rational`]: ./trait.Rational.html
@@ -287,6 +332,23 @@ impl<N, D, I> Div<I> for Ratio<N, D>
     fn div(self, _: I) -> Self::Output {
         Self::Output::_new()
     }
+}
+
+impl<N1, D1, N2, D2> Gcd<Ratio<N2, D2>> for Ratio<N1, D1>
+    where Ratio<N1, D1>: Rational,
+          Ratio<N2, D2>: Rational,
+          N1: Mul<D2>,
+          N2: Mul<D1>,
+          D1: Mul<D2>,
+          Prod<N1, D2>: Gcd<Prod<N2, D1>>,
+          Ratio<Gcf<Prod<N1, D2>, Prod<N2, D1>>, Prod<D1, D2>>: Rational,
+
+{
+    type Output =
+        ReducedRatio<
+            Gcf<Prod<N1, D2>, Prod<N2, D1>>,
+            Prod<D1, D2>,
+        >;
 }
 
 // TODO: Can't implement e.g `Div<Ratio<N, D>> for PInt<U>` due to coherence issues.
