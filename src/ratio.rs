@@ -364,6 +364,17 @@ impl<N1, D1, N2, D2> Gcd<Ratio<N2, D2>> for Ratio<N1, D1>
         >;
 }
 
+impl<N, D> Neg for Ratio<N, D>
+    where Ratio<N, D>: Rational,
+          Num<N, D>: Neg,
+{
+    type Output = Ratio<Negate<Num<N, D>>, Den<N, D>>;
+
+    fn neg(self) -> Self::Output {
+        Default::default()
+    }
+}
+
 // TODO: Can't implement e.g `Div<Ratio<N, D>> for PInt<U>` due to coherence issues.
 // Maybe add a feature to `typenum`?
 

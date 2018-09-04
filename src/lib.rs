@@ -69,6 +69,14 @@ mod tests {
     }
 
     #[test]
+    fn neg() {
+        assert_eq!(-rat!(P1/P2), rat!(N1/P2));
+        assert_eq!(-rat!(P1/N2), rat!(P1/P2));
+        assert_eq!(-rat!(N1/P2), rat!(P1/P2));
+        assert_eq!(-rat!(N1/N2), rat!(N1/P2));
+    }
+
+    #[test]
     fn cmp() {
         assert!(rat!(P2/P3) > rat!(P3/P5));
         assert!(rat!(N1/N2) > rat!(P1/N2));
