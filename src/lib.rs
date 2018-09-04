@@ -29,9 +29,6 @@ pub trait Rational {
     type Den: Integer + NonZero;
 }
 
-pub(crate) type Num<N, D> = <Ratio<N, D> as Rational>::Num;
-pub(crate) type Den<N, D> = <Ratio<N, D> as Rational>::Den;
-
 /// Creates a [`Ratio`] from two type-level integers.
 ///
 /// [`Ratio`]: ./struct.Ratio.html
