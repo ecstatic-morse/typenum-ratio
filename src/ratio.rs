@@ -348,6 +348,12 @@ impl<N1, D1, N2, D2> Rem<Ratio<N2, D2>> for Ratio<N1, D1>
     }
 }
 
+// TODO: impl Rem<I> for Ratio<_, _>
+
+// TODO: impl Pow<Ratio<N2, D2>> for Ratio<N1, D1>
+
+// TODO: impl Pow<I> for Ratio<N1, D1>
+
 /// gcd(N1/D1, N2/D2) = gcd(N1*D2, N2*D1)/(D1*D2)
 impl<N1, D1, N2, D2> Gcd<Ratio<N2, D2>> for Ratio<N1, D1>
     where N1: Mul<D2>,
@@ -363,6 +369,8 @@ impl<N1, D1, N2, D2> Gcd<Ratio<N2, D2>> for Ratio<N1, D1>
             Prod<D1, D2>,
         >;
 }
+
+// TODO: impl Gcd<I> for Ratio<_, _>
 
 impl<N, D> Neg for Ratio<N, D>
     where Ratio<N, D>: Rational,

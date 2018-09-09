@@ -1,11 +1,16 @@
+//! Compile-time rational arithmetic built on top of [`typenum`].
+//!
+//! [`typenum`]: https://docs.rs/typenum/
+
 extern crate typenum;
 
 pub mod consts;
 mod operator_aliases;
 mod ratio;
 
-use operator_aliases::*;
 pub use ratio::Ratio;
+pub use operator_aliases::{Num, Den};
+use operator_aliases::ReducedRatio;
 
 use typenum::{Integer, NonZero};
 
@@ -15,7 +20,7 @@ use typenum::{Integer, NonZero};
 ///
 /// * `Self::Den` is a positive integer.
 ///
-/// * `Self::Num / Self::Den` is a [reduced fraction][reduced]. Equivalently, the greatest common
+/// * `Self::Num / Self::Den` is a [reduced fraction][reduced]. In other words, the greatest common
 ///   divisor of `Self::Num` and `Self::Den` is `1`.
 ///
 /// [reduced]: http://mathworld.wolfram.com/ReducedFraction.html
@@ -108,6 +113,8 @@ mod tests {
     fn div() {
         assert_eq!(rat!(P1/P2) / rat!(P1/P3), rat!(P3/P2));
         assert_eq!(rat!(P4/P5) / rat!(P2/P3), rat!(P6/P5));
+
+        assert_eq!(rat!(P2/P3) / P2::new(), rat!(P1/P3));
     }
 
     #[test]
