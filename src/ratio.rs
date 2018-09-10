@@ -18,16 +18,19 @@ use super::{Rational, operator_aliases::{Num, Den, ReducedRatio}};
 
 /// A rational number whose value is known at compile time.
 ///
-/// This type implements [`Rational`] if *all* of the following conditions are met:
+/// This type implements [`Rational`] with the reduced form of `N/D` such that the greatest common
+/// divisor of `N` and `D` is `1` and `D` is greater than `0`. Specifically:
+///
+/// * `<Ratio<N, D> as Rational>::Num = sign(N) * sign(D) * abs(N) / gcd(N, D)`
+/// * `<Ratio<N, D> as Rational>::Den = abs(D) / gcd(N, D)`
+///
+/// However, [`Rational`] is only implemented if **all** of the following conditions are met:
 ///
 /// * `N` and `D` are [`typenum::Integer`]s.
 /// * `D` is [`NonZero`].
 ///
-/// `numerator   = sign(D) * N / gcd(N, D)`
-/// `denominator = abs(D) / gcd(N, D)`
-///
 /// Most uses of `Ratio` will be as a type parameter. For the rare cases when an instance of a
-/// `Ratio` type is needed, use the [`rat!`] macro.
+/// `Ratio` type is needed, use the [`rat!`] macro to construct one.
 ///
 /// # Example
 ///
