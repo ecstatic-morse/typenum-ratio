@@ -5,12 +5,11 @@
 extern crate typenum;
 
 pub mod consts;
-mod operator_aliases;
+pub mod operator_aliases;
 mod ratio;
 
 pub use ratio::Ratio;
-pub use operator_aliases::{Num, Den};
-use operator_aliases::ReducedRatio;
+pub use operator_aliases::*;
 
 use typenum::{Integer, NonZero};
 

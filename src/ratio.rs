@@ -14,7 +14,7 @@ use typenum::{
     type_operators::*,
 };
 
-use super::{Rational, Num, Den, ReducedRatio};
+use super::{Rational, operator_aliases::{Num, Den, ReducedRatio}};
 
 /// A rational number whose value is known at compile time.
 ///
