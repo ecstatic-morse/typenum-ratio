@@ -348,11 +348,21 @@ impl<N1, D1, N2, D2> Rem<Ratio<N2, D2>> for Ratio<N1, D1>
     }
 }
 
-// TODO: impl Rem<I> for Ratio<_, _>
+/// (N/D) % I = (N % I*D)/D
+impl<N, D, I> Rem<I> for Ratio<N, D>
+    where I: Integer + Mul<D>,
+          N: Rem<Prod<I, D>>,
+          Ratio<Mod<N, Prod<I, D>>, D>: Rational,
+{
+    type Output = ReducedRatio<
+        Mod<N, Prod<I, D>>,
+        D,
+    >;
 
-// TODO: impl Pow<Ratio<N2, D2>> for Ratio<N1, D1>
-
-// TODO: impl Pow<I> for Ratio<N1, D1>
+    fn rem(self, _: I) -> Self::Output {
+        Default::default()
+    }
+}
 
 /// gcd(N1/D1, N2/D2) = gcd(N1*D2, N2*D1)/(D1*D2)
 impl<N1, D1, N2, D2> Gcd<Ratio<N2, D2>> for Ratio<N1, D1>
@@ -370,7 +380,12 @@ impl<N1, D1, N2, D2> Gcd<Ratio<N2, D2>> for Ratio<N1, D1>
         >;
 }
 
-// TODO: impl Gcd<I> for Ratio<_, _>
+impl<N, D, I> Gcd<I> for Ratio<N, D>
+    where I: Integer,
+          Ratio<N, D>: Gcd<Ratio<I, P1>>,
+{
+    type Output = Gcf<Ratio<N, D>, Ratio<I, P1>>;
+}
 
 impl<N, D> Neg for Ratio<N, D>
     where Ratio<N, D>: Rational,
@@ -379,6 +394,20 @@ impl<N, D> Neg for Ratio<N, D>
     type Output = Ratio<Negate<Num<N, D>>, Den<N, D>>;
 
     fn neg(self) -> Self::Output {
+        Default::default()
+    }
+}
+
+impl<N, D, I> Pow<I> for Ratio<N, D>
+    where Ratio<N, D>: Rational,
+          Num<N, D>: Pow<I>,
+          Den<N, D>: Pow<I>,
+          Ratio<Exp<Num<N, D>, I>, Exp<Den<N, D>, I>>: Rational,
+
+{
+    type Output = ReducedRatio<Exp<Num<N, D>, I>, Exp<Den<N, D>, I>>;
+
+    fn powi(self, _: I) -> Self::Output {
         Default::default()
     }
 }
