@@ -7,7 +7,8 @@ description = "Compile-time rational arithmetic using typenum"
 readme = "README.md"
 
 [dependencies]
+typenum = "1.10.0"
 
-[dependencies.typenum]
+[patch.crates-io.typenum]
 git = "https://github.com/ecstatic-morse/typenum"
-rev = "1a12fee71f69fb63838c1a2dd535461d397303cb"
+branch = "gcd"
