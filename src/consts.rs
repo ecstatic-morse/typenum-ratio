@@ -11,7 +11,7 @@
 //! | [`Giga`]  | `G`    | 10⁹   |                                                                |
 //! | [`Mega`]  | `M`    | 10⁶   |                                                                |
 //! | [`Kilo`]  | `k`    | 10³   |                                                                |
-//! | [`Hecta`] | `h`    | 10²   |                                                                |
+//! | [`Hecto`] | `h`    | 10²   |                                                                |
 //! | [`Deca`]  | `da`   | 10¹   |                                                                |
 //! | [`Deci`]  | `d`    | 10⁻¹  |                                                                |
 //! | [`Centi`] | `c`    | 10⁻²  |                                                                |
@@ -28,7 +28,7 @@
 //! [`Giga`]: ./type.Giga.html
 //! [`Mega`]: ./type.Mega.html
 //! [`Kilo`]: ./type.Kilo.html
-//! [`Hecta`]: ./type.Hecta.html
+//! [`Hecto`]: ./type.Hecto.html
 //! [`Deca`]: ./type.Deca.html
 //! [`Deci`]: ./type.Deci.html
 //! [`Centi`]: ./type.Centi.html
@@ -56,7 +56,7 @@ pub type Mega = Ratio<P1000000>;
 /// 10³
 pub type Kilo = Ratio<P1000>;
 /// 10²
-pub type Hecta = Ratio<P100>;
+pub type Hecto = Ratio<P100>;
 /// 10¹
 pub type Deca = Ratio<P10>;
 
