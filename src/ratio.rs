@@ -321,10 +321,9 @@ impl<N1, D1, N2, D2> Div<Ratio<N2, D2>> for Ratio<N1, D1>
 impl<N, D, I> Div<I> for Ratio<N, D>
     where I: Integer,
           D: Mul<I>,
-          Prod<D, I>: Integer,
+          Ratio<N, Prod<D, I>>: Rational,
 {
-    // No need to reduce.
-    type Output = Ratio<N, Prod<D, I>>;
+    type Output = ReducedRatio<N, Prod<D, I>>;
 
     fn div(self, _: I) -> Self::Output {
         Default::default()
